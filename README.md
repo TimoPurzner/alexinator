@@ -1,0 +1,3 @@
+## alexinator
+
+Generated alexa application.

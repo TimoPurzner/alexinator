@@ -1,6 +1,9 @@
 var alexa = require('alexa-app');
 var winston = require('winston');
 var glob = require('glob');
+var request = require('request');
+
+var url = 'http://api-de1.akinator.com/ws/';
 
 if (!process.env.ISLAMBDA) {
   var express = require('express');
@@ -30,8 +33,23 @@ class AlexaApp {
   initializeApp() {
     this.app = new alexa.app(this.name);
     this.app.launch(function(req, res) {
-        res.say('Wellcome, what do you want to do?');
+        winston.log('info','Launching app instance ...');
+        winston.log('info','Setting common stuff ...');
+        var session = req.getSession()
+        res.say('Willkommen bei Alexinator, dem Spiel das deine Gedanken lesen kann');
         res.shouldEndSession(true);
+        // Do Request to get a akinator session
+        request(url + 'new_session?partner=1&player=Kari', function(error, response, body) {
+            if (!error && response.statusCode == 200) {
+              var rs = JSON.parse(body);
+              var sessionID = rs.parameters.identification.session;
+              var signature = rs.parameters.identification.signature;
+              //session.set("akinatorSession", sessionID);
+            } else {
+              winston.log('error', error.msg);
+            }
+        });
+        winston.log('info','Sucessfully launched app ...');
     });
   }
 

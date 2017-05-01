@@ -35,21 +35,24 @@ class AlexaApp {
         var session = req.getSession();
         res.shouldEndSession(false);
         // Get an Session from akinator and save it
-        akinator.createSession(function(rs){
-          if(rs!=false){
-            session.set('akinatorSession', rs.session);
-            session.set('akinatorSignature', rs.signature);
-            session.set('akinatorStep', rs.step);
-            session.set('akinatorQuestion', rs.question);
-            winston.log('info','... Sucessfully launched app');
-            console.log(session);
-          }else{
-            // session.set('error', "API Failed");
-            winston.log('error','... Akinator API failed ');
-          }
-        });
+        return akinator.createSession().then(
+          function(rs){ // sucess
+              session.set('akinatorSession', rs.session);
+              session.set('akinatorSignature', rs.signature);
+              session.set('akinatorStep', rs.step);
+              session.set('akinatorQuestion', rs.question);
+              winston.log('info','... Sucessfully launched app');
+              winston.log('info', session);
 
-        res.say('Willkommen bei Alexinator, dem Spiel das deine Gedanken lesen kann');
+              res.say('Willkommen bei Alexinator, dem Spiel das deine Gedanken lesen kann');
+
+              winston.log('info', "... Launching successfull");
+              return res.send();
+          },
+          function(error){
+            winston.log('error', '... Launching failed!!');
+          }
+        );
     });
   }
 

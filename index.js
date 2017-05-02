@@ -19,13 +19,14 @@ class AlexaApp {
 
   initializeServer() {
     this.server = express();
-    this.server.use(bodyParser.urlencoded({extended: true}));
-    this.server.use(bodyParser.json());
     this.server.set('view engine', 'ejs');
     this.server.listen(this.port);
     winston.log('info','Listening on port '+this.port);
     winston.log('info','You can access your intent information at http://localhost:'+this.port+'/echo/'+this.name);
-    this.app.express(this.server, '/echo/');
+
+    var router = express.Router()
+    this.app.express({ router: router, checkCert: false });
+    this.server.use('/echo', router)
   }
 
   initializeApp() {

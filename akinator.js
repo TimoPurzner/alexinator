@@ -22,14 +22,17 @@ exports.createSession = function(){
 
             resolve({session: sessionID,signature: signatureID, step: stepNu, question: questionStr});
           }else{
-            reject(new Error("Akinator-Api Error status:"));
+            reject(new Error("Request failed cant get session"));
           }
         });
     });
 }
+
+
 /**
 sendAnswer
 sends the players answer to the akinator server
+Returns a new question from the akinator API.
 
 Parameter:
   answerId:   the Players answer
@@ -39,7 +42,7 @@ Parameter:
   cb:         the callback function
 
 */
-exports.sendAnswer = function(answerId, session, signature, step, cb) {
+exports.sendAnswer = function(answer, session, signature, step) {
   var answerId;
   // Set the answerID
   switch (answer) {
@@ -73,18 +76,20 @@ exports.sendAnswer = function(answerId, session, signature, step, cb) {
       }
   }
 
-  request(url + 'answer?session=' + session + '&signature=' + signature + '&step=' + step + '&answer=' + answerId, function(error, response, body) {
-      if (!error && response.statusCode == 200) {
-        var rs = JSON.parse(body);
-        var questionStr = rs.parameters.step_information.question;
-        var stepNu = rs.parameters.step_information.step;
-      }
-      // Return logic
-      if(cb){
-        cb({step: stepNu, question: questionStr});
-      }else{
-        //return an promis
-        return new Promise({step: stepNu, question: questionStr});
-      }
-  }); // request
+  return new Promise(
+    function (resolve, reject) {
+      request(url + 'answer?session=' + session + '&signature=' + signature + '&step=' + step + '&answer=' + answerId, function(error, response, body) {
+        if (!error && response.statusCode == 200) {
+          var rs = JSON.parse(body);
+          var questionStr = rs.parameters.step_information.question;
+          var stepNu = rs.parameters.step_information.step;
+          // On success return question
+          resolve({question: questionStr, step: stepNu})
+        }else{
+          // On Error
+          reject(new Error("Request fehlgeschlagen cant send Answer"));
+        }
+      });
+    } // function
+  );// Promise
 }

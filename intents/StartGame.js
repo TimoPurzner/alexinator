@@ -10,7 +10,6 @@ module.exports = class Intent {
     var session = req.getSession();
     var question = session.get('akinatorQuestion');
     // Ask question and get an answer
-    console.log(session);
     res.reprompt(question);
   }
 }

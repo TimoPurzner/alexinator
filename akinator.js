@@ -12,21 +12,21 @@ exports.createSession = function(){
   return new Promise(
     function (resolve, reject) {
       request(url + 'new_session?partner=1&player=alexinator', function(error, response, body) {
-        if (!error && response.statusCode == 200) {
+        if (!error && response.statusCode === 200) {
           // Sucessfull request save data
           var rs = JSON.parse(body);
-          var sessionID   = rs.parameters.identification.session;
-          var signatureID = rs.parameters.identification.signature;
-          var stepNu      = rs.parameters.step_information.step;
-          var questionStr = rs.parameters.step_information.question;
+          var session_id   = rs.parameters.identification.session;
+          var signature_id = rs.parameters.identification.signature;
+          var step_nu      = rs.parameters.step_information.step;
+          var question_str = rs.parameters.step_information.question;
 
-            resolve({session: sessionID,signature: signatureID, step: stepNu, question: questionStr});
+            resolve({session: session_id, signature: signature_id, step: step_nu, question: question_str});
           }else{
-            reject(new Error("Request failed cant get session"));
+            reject(new Error('Request failed cant get session'));
           }
         });
     });
-}
+};
 
 
 /**
@@ -45,6 +45,7 @@ Parameter:
 exports.sendAnswer = function(answer, session, signature, step) {
   var answerId;
   // Set the answerID
+  answer.toLowerCase();
   switch (answer) {
     case 'ja':
       answerId = 0;
@@ -59,37 +60,33 @@ exports.sendAnswer = function(answer, session, signature, step) {
       answerId = 2;
       break;
 
-    case 'Wahrscheinlich':
+    case 'wahrscheinlich':
       answerId = 3;
       break;
 
-    case 'Wahrscheinlich nicht':
+    case 'wahrscheinlich nicht':
       answerId = 4;
       break;
 
     default:
       answerId=false;
-      if(cb)
-        cb({error:"ungültige Antwort", errorNu:"-1"});
-      else{
-        return false;
-      }
   }
 
   return new Promise(
     function (resolve, reject) {
       request(url + 'answer?session=' + session + '&signature=' + signature + '&step=' + step + '&answer=' + answerId, function(error, response, body) {
-        if (!error && response.statusCode == 200) {
+        if (!error && response.statusCode === 200) {
           var rs = JSON.parse(body);
-          var questionStr = rs.parameters.step_information.question;
-          var stepNu = rs.parameters.step_information.step;
+          //winston.log('info', body);
+          var question_str = rs.parameters.question;
+          var step_nu = rs.parameters.step;
           // On success return question
-          resolve({question: questionStr, step: stepNu})
+          resolve({question: question_str, step: step_nu})
         }else{
           // On Error
-          reject(new Error("Request fehlgeschlagen cant send Answer"));
+          reject(new Error('Request fehlgeschlagen cant send Answer'));
         }
       });
     } // function
   );// Promise
-}
+};

@@ -23,10 +23,9 @@ class AlexaApp {
     this.server.listen(this.port);
     winston.log('info','Listening on port '+this.port);
     winston.log('info','You can access your intent information at http://localhost:'+this.port+'/echo/'+this.name);
-
-    var router = express.Router()
+    var router = express.Router();
     this.app.express({ router: router, checkCert: false });
-    this.server.use('/echo', router)
+    this.server.use('/echo', router);
   }
 
   initializeApp() {
@@ -42,12 +41,11 @@ class AlexaApp {
               session.set('akinatorSignature', rs.signature);
               session.set('akinatorStep', rs.step);
               session.set('akinatorQuestion', rs.question);
-              winston.log('info','... Sucessfully launched app');
-              winston.log('info', session);
+
+              // winston.log('info', session);
 
               res.say('Willkommen bei Alexinator, dem Spiel das deine Gedanken lesen kann');
-
-              winston.log('info', "... Launching successfull");
+              winston.log('info','... Sucessfully launched app');
               return res.send();
           },
           function(error){
@@ -59,7 +57,7 @@ class AlexaApp {
 
   loadIntents() {
     var intentPath = './intents';
-    glob("**.js", {cwd: './intents'}, function (er, files) {
+    glob('**.js', {cwd: './intents'}, function (er, files) {
       for (var i = 0; i < files.length; i++) {
         var currentIntent = new (require(intentPath+'/'+files[i]))();
         this.app.intent(currentIntent.name, {

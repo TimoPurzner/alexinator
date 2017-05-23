@@ -32,24 +32,29 @@ module.exports = class Intent {
 
     // Ask question and get an answer
     return akinator.sendAnswer(answer, akSession, akSignature, akStep).then(
-    function(rs){ // sucess
-      // Get new question
-      question = rs.question;
-
-      // Save Step
-      session.set('akinatorStep', rs.step);
-
-      // Asking next question
-      res.reprompt(question);
-
-      // set new question
-      session.set('akinatorQuestion', rs.question);
-      session.set('akinatorStep', rs.step);
+    function(rs){ // success
       
+      if(rs.name){ // Akinator trys to guess
+        res.say("Denkst du an " + rs.name + " der " + rs.des);
+        return res.send();
+      }else{ // new question
+
+        // Get new question
+        question = rs.question;
+        // Save Step
+        session.set('akinatorStep', rs.step);
+        // Asking next question
+        res.reprompt(question);
+        // set new question
+        session.set('akinatorQuestion', rs.question);
+        session.set('akinatorStep', rs.step);
+      }
+
       return res.send();
     },
     function(error){ // error
-      winston.log('error', 'Error, sending Answer failed');
+      res.reprompt(error.error_text + ". Für Hilfe frag nach Hilfe, dann versuche ich dir zu helfen");
+      return res.send();
     });
   }
 };

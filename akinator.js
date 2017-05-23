@@ -43,50 +43,96 @@ Parameter:
 
 */
 exports.sendAnswer = function(answer, session, signature, step) {
-  var answerId;
-  // Set the answerID
-  answer.toLowerCase();
-  switch (answer) {
-    case 'ja':
-      answerId = 0;
-      break;
-
-    case 'nein':
-      answerId = 1;
-      break;
-
-    case 'ich weiß es nicht':
-    case 'ich weiß nicht':
-      answerId = 2;
-      break;
-
-    case 'wahrscheinlich':
-      answerId = 3;
-      break;
-
-    case 'wahrscheinlich nicht':
-      answerId = 4;
-      break;
-
-    default:
-      answerId=false;
-  }
 
   return new Promise(
     function (resolve, reject) {
+      var answerId;
+      // Set the answerID
+      answer.toLowerCase();
+      switch (answer) {
+        case 'ja':
+          answerId = 0;
+          break;
+
+        case 'nein':
+          answerId = 1;
+          break;
+
+        case 'ich weiß es nicht':
+        case 'ich weiß nicht':
+          answerId = 2;
+          break;
+
+        case 'wahrscheinlich':
+          answerId = 3;
+          break;
+
+        case 'wahrscheinlich nicht':
+          answerId = 4;
+          break;
+
+        default:
+          reject({ // return an error
+            error_text: 'Das ist leider keine Gültige Antwort',
+            error: 1
+          });
+          break;
+      }
+
       request(url + 'answer?session=' + session + '&signature=' + signature + '&step=' + step + '&answer=' + answerId, function(error, response, body) {
         if (!error && response.statusCode === 200) {
-          var rs = JSON.parse(body);
-          //winston.log('info', body);
-          var question_str = rs.parameters.question;
-          var step_nu = rs.parameters.step;
-          // On success return question
-          resolve({question: question_str, step: step_nu})
-        }else{
-          // On Error
-          reject(new Error('Request fehlgeschlagen cant send Answer'));
+          winston.log('info', body+'\r\n');
+          //TODO: check if question is null
+          checkWin(JSON.parse(body), function(rs ,win){
+            if(win){ // if akinator try to guess
+              // Get the person akinator trys to guess
+              request(url + 'list?session=' +session+ '&signature=' +signature+'&step=' +step+ '&size=2&max_pic_width=246&max_pic_height=294&pref_photos=VO-OK&mode_question=0', function(error, response, body) {
+                if (!error && response.statusCode == 200) { // Rewquest success
+                  var rs = JSON.parse(body);
+                  winston.log('info', 'GEWONNNNENN WUHUHUHUHHUH\r\n\r\n');
+                  winston.log('info', body + '\r\n\r\n');
+                  resolve({
+                    name: rs.parameters.elements[0].element.name,
+                    des:  rs.parameters.elements[0].element.description,
+                    pic:  rs.parameters.elements[0].element.absolute_picture_path
+                  });
+                }else {
+                  reject({
+                    error_text: 'Akinator gibt leider keine Antwort',
+                    error: response.statusCode
+                  });
+                }// request fails
+              }); // Request
+            }else{ // akinator gives a new question
+              /*request(url + 'list?session=' +session+ '&signature=' +signature+'&step=' +step+ '&size=2&max_pic_width=246&max_pic_height=294&pref_photos=VO-OK&mode_question=0', function(error, response, body) {
+
+                var rs = JSON.parse(body);
+                winston.log('debug', url + 'list?session=' +session+ '&signature=' +signature+'&step=' +step+ '&size=2&max_pic_width=246&max_pic_height=294&pref_photos=VO-OK&mode_question=0');
+                winston.log('debug', "name"+ JSON.stringify(body));
+              }); */
+              resolve({
+                question: rs.parameters.question,
+                step: rs.parameters.step
+              });
+            }
+          })
+        }else{ // if request fails
+          winston.log('error', 'Request from akinator-API failed');
+          reject({
+            error_text: 'Akinator gibt leider keine Antwort',
+            error: response.statusCode
+          });
         }
       });
-    } // function
-  );// Promise
+    });// Promise
 };
+
+checkWin = function(rs, cb){
+  // if elements is given akinator trys to guess the person
+  if(rs.parameters.progression == 100){
+    cb(rs, true);
+  }
+  else{
+    cb(rs, false);
+  }
+}

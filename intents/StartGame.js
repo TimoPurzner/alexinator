@@ -22,6 +22,19 @@ module.exports = class Intent {
     var session = req.getSession();
     var question = session.get('akinatorQuestion');
     // Ask question and get an answer
-    res.reprompt(question);
+    // Get an Session from akinator and save it
+    return akinator.createSession().then(
+      function(rs){ // sucess
+          session.set('akinatorSession', rs.session);
+          session.set('akinatorSignature', rs.signature);
+          session.set('akinatorStep', rs.step);
+          session.set('akinatorQuestion', rs.question);
+          res.reprompt(rs.question);
+          return res.send();
+      },
+      function(error){
+        winston.log('error', '... Launching failed!!');
+      }
+    );
   }
 }

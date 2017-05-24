@@ -86,30 +86,32 @@ exports.sendAnswer = function(answer, session, signature, step) {
           checkWin(JSON.parse(body), function(rs ,win){
             if(win){ // if akinator try to guess
               // Get the person akinator trys to guess
-              request(url + 'list?session=' +session+ '&signature=' +signature+'&step=' +step+ '&size=2&max_pic_width=246&max_pic_height=294&pref_photos=VO-OK&mode_question=0', function(error, response, body) {
-                if (!error && response.statusCode == 200) { // Rewquest success
-                  var rs = JSON.parse(body);
-                  winston.log('info', 'GEWONNNNENN WUHUHUHUHHUH\r\n\r\n');
-                  winston.log('info', body + '\r\n\r\n');
-                  resolve({
-                    name: rs.parameters.elements[0].element.name,
-                    des:  rs.parameters.elements[0].element.description,
-                    pic:  rs.parameters.elements[0].element.absolute_picture_path
-                  });
-                }else {
-                  reject({
-                    error_text: 'Akinator gibt leider keine Antwort',
-                    error: response.statusCode
-                  });
-                }// request fails
+              request({
+                  headers: {
+                      'dataType': 'jsonp'
+                    },
+                    uri: url + 'list?session=' +session+ '&signature=' +signature+'&step=' +step+ '&size=2&max_pic_width=246&max_pic_height=294&pref_photos=VO-OK&mode_question=1',
+                    method: 'GET'
+                  }, function(error, response, body) {
+                    if (!error && response.statusCode == 200) { // Rewquest success
+                      var rsL = JSON.parse(body);
+                      winston.log('info', 'GEWONNNNENN WUHUHUHUHHUH\r\n\r\n');
+                      winston.log('info', body + '\r\n\r\n');
+                      resolve({
+                        name: rsL.parameters.elements[0].element.name,
+                        des:  rsL.parameters.elements[0].element.description,
+                        pic:  rsL.parameters.elements[0].element.absolute_picture_path,
+                        question: rs.parameters.question, /* Fals Person nicht die richtige ist */
+                        step: rs.parameters.step
+                      });
+                    }else {
+                      reject({
+                        error_text: 'Akinator gibt leider keine Antwort',
+                        error: response.statusCode
+                      });
+                    }// request fails
               }); // Request
             }else{ // akinator gives a new question
-              /*request(url + 'list?session=' +session+ '&signature=' +signature+'&step=' +step+ '&size=2&max_pic_width=246&max_pic_height=294&pref_photos=VO-OK&mode_question=0', function(error, response, body) {
-
-                var rs = JSON.parse(body);
-                winston.log('debug', url + 'list?session=' +session+ '&signature=' +signature+'&step=' +step+ '&size=2&max_pic_width=246&max_pic_height=294&pref_photos=VO-OK&mode_question=0');
-                winston.log('debug', "name"+ JSON.stringify(body));
-              }); */
               resolve({
                 question: rs.parameters.question,
                 step: rs.parameters.step
@@ -117,7 +119,7 @@ exports.sendAnswer = function(answer, session, signature, step) {
             }
           })
         }else{ // if request fails
-          winston.log('error', 'Request from akinator-API failed');
+          winston.log('error', 'Request from akinator-API fehlerhaft');
           reject({
             error_text: 'Akinator gibt leider keine Antwort',
             error: response.statusCode
@@ -129,7 +131,7 @@ exports.sendAnswer = function(answer, session, signature, step) {
 
 checkWin = function(rs, cb){
   // if elements is given akinator trys to guess the person
-  if(rs.parameters.progression == 100){
+  if(rs.parameters.progression >=99.5){
     cb(rs, true);
   }
   else{

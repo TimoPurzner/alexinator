@@ -17,44 +17,58 @@ module.exports = class Intent {
     this.utterances = ['{-|answer}'];
   }
   execute(req, res) {
-
+    winston.log('info', 'Intent: GameRound');
     //Get current question
     var session = req.getSession();
-
-    // Normal variables to use it
-    var question = '';
 
     // Get variables to send to akinator
     var answer      = req.slot('answer');
     var akSession   = session.get('akinatorSession');
     var akSignature = session.get('akinatorSignature');
     var akStep      = session.get('akinatorStep');
-
-    // Ask question and get an answer
-    return akinator.sendAnswer(answer, akSession, akSignature, akStep).then(
-    function(rs){ // success
-      
-      if(rs.name){ // Akinator trys to guess
-        res.say("Denkst du an " + rs.name + " der " + rs.des);
+    var status      = session.get('status');
+    winston.log('info', 'Status: ' +status);
+    // check if there is an winning condition
+    if(status=='win'){
+      if(answer.toLowerCase()=='ja'){
+        // TODO Send Akinator das es stimmt
+        res.say("Wieder richtig gelegen Klasse");
         return res.send();
-      }else{ // new question
-
-        // Get new question
-        question = rs.question;
-        // Save Step
-        session.set('akinatorStep', rs.step);
-        // Asking next question
-        res.reprompt(question);
-        // set new question
-        session.set('akinatorQuestion', rs.question);
-        session.set('akinatorStep', rs.step);
       }
+      if(answer.toLowerCase()='nein'){
+        res.reprompt("Dann muss ich wohl mehr fragen stellen, "+ session.get(question));
+        session.set('status','question');
+        return res.send();
+      }
+    }else{
+      // Ask question and get an answer
+      return akinator.sendAnswer(answer, akSession, akSignature, akStep).then(
+      function(rs){ // success
 
-      return res.send();
-    },
-    function(error){ // error
-      res.reprompt(error.error_text + ". Für Hilfe frag nach Hilfe, dann versuche ich dir zu helfen");
-      return res.send();
-    });
+        if(rs.name){ // Akinator trys to guess
+          res.reprompt("Denkst du an " + rs.name + " " + rs.des + "?");
+          // Save so the user can tell if the Person is right or wrong
+          session.set('status','win');
+          session.set('akinatorQuestion', rs.question);
+          session.set('akinatorStep', rs.step);
+          return res.send();
+        }else{ // new question
+          var question = '';
+          // Get new question
+          question = rs.question;
+          // Asking next question
+          res.reprompt(question);
+          // set new question
+          session.set('akinatorQuestion', rs.question);
+          session.set('akinatorStep', rs.step);
+        }
+
+        return res.send();
+      },
+      function(error){ // error
+        res.reprompt(error.error_text + ". Für Hilfe frag nach Hilfe, dann versuche ich dir zu helfen");
+        return res.send();
+      });
+    }
   }
 };

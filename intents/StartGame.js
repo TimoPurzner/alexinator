@@ -17,7 +17,7 @@ module.exports = class Intent {
   }
   execute(req, res) {
     winston.log('info','First round started');
-
+    res.shouldEndSession(false);
     //Get current question
     var session = req.getSession();
     var question = session.get('akinatorQuestion');
@@ -29,11 +29,12 @@ module.exports = class Intent {
           session.set('akinatorSignature', rs.signature);
           session.set('akinatorStep', rs.step);
           session.set('akinatorQuestion', rs.question);
+          session.set('status','question');
           res.reprompt(rs.question);
           return res.send();
       },
       function(error){
-        winston.log('error', '... Launching failed!!');
+        winston.log('error', 'Game counld start');
       }
     );
   }

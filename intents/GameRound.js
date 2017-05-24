@@ -18,6 +18,7 @@ module.exports = class Intent {
   }
   execute(req, res) {
     winston.log('info', 'Intent: GameRound');
+    res.shouldEndSession(false);
     //Get current question
     var session = req.getSession();
 
@@ -28,6 +29,7 @@ module.exports = class Intent {
     var akStep      = session.get('akinatorStep');
     var status      = session.get('status');
     winston.log('info', 'Status: ' +status);
+
     // check if there is an winning condition
     if(status=='win'){
       if(answer.toLowerCase()=='ja'){
@@ -61,6 +63,7 @@ module.exports = class Intent {
           // set new question
           session.set('akinatorQuestion', rs.question);
           session.set('akinatorStep', rs.step);
+          session.set('status','question');
         }
 
         return res.send();

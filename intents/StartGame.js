@@ -47,7 +47,7 @@ module.exports = class Intent {
           session.set('akinatorQuestion', rs.question);
           session.set('status','question');
           winston.log('info','Create session success set session done');
-          res.reprompt(rs.question);
+          res.say(rs.question);
           return res.send();
       },
       function(error){

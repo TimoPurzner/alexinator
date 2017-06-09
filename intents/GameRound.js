@@ -41,7 +41,7 @@ module.exports = class Intent {
         return res.send();
       }
       if(answer.toLowerCase()='nein'){
-        res.reprompt("Dann muss ich wohl mehr fragen stellen, "+ session.get(question));
+        res.say("Dann muss ich wohl mehr fragen stellen, "+ session.get(question));
         session.set('status','question');
         return res.send();
       }
@@ -51,7 +51,7 @@ module.exports = class Intent {
       function(rs){ // success
 
         if(rs.name){ // Akinator trys to guess
-          res.reprompt("Denkst du an " + rs.name + " " + rs.des + "?");
+          res.say("Denkst du an " + rs.name + " " + rs.des + "?");
           // Save so the user can tell if the Person is right or wrong
           session.set('status','win');
           session.set('akinatorQuestion', rs.question);

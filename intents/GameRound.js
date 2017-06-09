@@ -7,6 +7,7 @@
 
 var winston = require('winston');
 var akinator = require('../akinator.js');
+var moment = require('moment');
 
 module.exports = class Intent {
   constructor() {
@@ -17,7 +18,9 @@ module.exports = class Intent {
     this.utterances = ['{-|answer}'];
   }
   execute(req, res) {
-    winston.log('info', 'Intent: GameRound');
+    var now = moment();
+    var time = now.format('YYYY-MM-DD HH:mm:ss Z');
+    winston.log('info', 'Intent: GameRound ['+time+']');
     res.shouldEndSession(false);
     //Get current question
     var session = req.getSession();

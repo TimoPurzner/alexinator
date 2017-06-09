@@ -1,22 +1,36 @@
 /*####################################
   Intent: Start Game
   Slots:
-  Starts the game and asks for an question
+  Starts the game and asks for the first question
 ######################################*/
 
 // modules for this intent
 var winston = require('winston');
 var akinator = require('../akinator.js');
+var moment = require('moment');
 
 module.exports = class Intent {
   constructor() {
     this.name = "StartGame";
     this.utterances = ["Start"],
                       ["{Starte|Beginne} ein Spiel { |Alexinator}"],
-                      ["{Starte|Beginne} eine Runde { |Alexinator}"]
+                      ["{Starte|Beginne} eine Runde { |Alexinator}"],
+                      ["Starte ein Spiel"],
+                      ["Starte ein Spiel Alexinator"],
+                      ["Starte Alexinator"],
+                      ["Beginn eine Runde"],
+                      ["Beginn eine Runde Alexinator"],
+                      ["Beginne ein Spiel"],
+                      ["Beginne ein Spiel Alexinator"],
+                      ["Starte"],
+                      ["Beginne"],
+                      ["Lass mich raten"],
+                      ["Frag mich etwas"]
   }
   execute(req, res) {
-    winston.log('info','First round started');
+    var now = moment();
+    var time = now.format('YYYY-MM-DD HH:mm:ss Z');
+    winston.log('info','Intent: StartGame ['+time+']');
     res.shouldEndSession(false);
     //Get current question
     var session = req.getSession();
@@ -34,7 +48,8 @@ module.exports = class Intent {
           return res.send();
       },
       function(error){
-        winston.log('error', 'Game counld start');
+        winston.log('error', 'Das Spiel konnte nicht gestartet werden.');
+        session.set('status','error');
       }
     );
   }

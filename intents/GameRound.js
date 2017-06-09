@@ -62,7 +62,7 @@ module.exports = class Intent {
           // Get new question
           question = rs.question;
           // Asking next question
-          res.reprompt(question);
+          res.say(question);
           // set new question
           session.set('akinatorQuestion', rs.question);
           session.set('akinatorStep', rs.step);
@@ -72,7 +72,7 @@ module.exports = class Intent {
         return res.send();
       },
       function(error){ // error
-        res.reprompt(error.error_text + ". Für Hilfe frag nach Hilfe, dann versuche ich dir zu helfen");
+        res.say(error.error_text + ". Für Hilfe frag nach Hilfe, dann versuche ich dir zu helfen");
         return res.send();
       });
     }

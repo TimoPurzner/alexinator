@@ -35,19 +35,23 @@ module.exports = class Intent {
     //Get current question
     var session = req.getSession();
     var question = session.get('akinatorQuestion');
+    winston.log('info','Variablen angelegt');
     // Ask question and get an answer
     // Get an Session from akinator and save it
     return akinator.createSession().then(
       function(rs){ // sucess
+              winston.log('info','Create session success');
           session.set('akinatorSession', rs.session);
           session.set('akinatorSignature', rs.signature);
           session.set('akinatorStep', rs.step);
           session.set('akinatorQuestion', rs.question);
           session.set('status','question');
+          winston.log('info','Create session success set session done');
           res.reprompt(rs.question);
           return res.send();
       },
       function(error){
+        winston.log('info','Create session error');
         winston.log('error', 'Das Spiel konnte nicht gestartet werden.');
         session.set('status','error');
       }

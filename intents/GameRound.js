@@ -42,7 +42,7 @@ module.exports = class Intent {
         return res.send();
       }
       if(answer.toLowerCase()='nein'){
-        res.say("Dann muss ich wohl mehr Fragen stellen, "+ session.get(question)).reprompt("Reprompt");
+        res.say("Dann muss ich wohl mehr Fragen stellen, "+ session.get(question)).reprompt("hilfe");
         session.set('status','question');
         return res.send();
       }
@@ -52,9 +52,10 @@ module.exports = class Intent {
       function(rs){ // success
 
         if(rs.name){ // Akinator trys to guess
-          res.say("Denkst du an " + rs.name + " " + rs.des + "?").reprompt("Reprompt");
+          res.say("Denkst du an " + rs.name + " " + rs.des + "?").reprompt("hilfe");
           // Save so the user can tell if the Person is right or wrong
           session.set('akinatorName',rs.name);
+          session.set('akinatorPicURL',rs.pic);
           session.set('status','win');
           session.set('akinatorQuestion', rs.question);
           session.set('akinatorStep', rs.step);
@@ -64,7 +65,7 @@ module.exports = class Intent {
           // Get new question
           question = rs.question;
           // Asking next question
-          res.say(question).reprompt("Reprompt");
+          res.say(question).reprompt("hilfe");
           // set new question
           session.set('akinatorQuestion', rs.question);
           session.set('akinatorStep', rs.step);

@@ -29,7 +29,7 @@ module.exports = class TestIntent {
           rsp.say("Ich habe die Letze Person erraten an die du gedacht hast. Sage Starte eine Runde um ein neues Spiel zu begeinnen").reprompt("Hilfe");
       break;
       case 'win':
-        resp.say("Ich wollte wissen ob du an " + session.get("akinatorName") + " gedacht hast".reprompt("Hilfe");
+        resp.say("Ich wollte wissen ob du an " + session.get("akinatorName") + " gedacht hast").reprompt("Hilfe");
         break;
       default:
         rsp.say("Alexinator ist ein Spiel das versucht eine Person zu erraten, an die du denkst! Dazu stelle ich dir "+

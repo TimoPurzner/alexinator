@@ -59,7 +59,7 @@ exports.sendAnswer = function(answer, session, signature, step) {
 
         case 'ich weiß es nicht':
         case 'ich weiß nicht':
-        case: 'weiß ich nicht'
+        case 'weiß ich nicht':
           answerId = 2;
           break;
 

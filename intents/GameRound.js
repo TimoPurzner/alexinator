@@ -38,6 +38,7 @@ module.exports = class Intent {
       if(answer.toLowerCase()=='ja'){
         // TODO Send Akinator das es stimmt
         res.say("Wieder richtig gelegen Klasse");
+        session.set('status','finished');
         return res.send();
       }
       if(answer.toLowerCase()='nein'){
@@ -53,6 +54,7 @@ module.exports = class Intent {
         if(rs.name){ // Akinator trys to guess
           res.say("Denkst du an " + rs.name + " " + rs.des + "?").reprompt("Reprompt");
           // Save so the user can tell if the Person is right or wrong
+          session.set('akinatorName',rs.name);
           session.set('status','win');
           session.set('akinatorQuestion', rs.question);
           session.set('akinatorStep', rs.step);

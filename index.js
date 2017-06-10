@@ -28,6 +28,9 @@ class AlexaApp {
     var router = express.Router();
     this.app.express({ router: router, checkCert: false });
     this.server.use('/echo', router);
+    // Set custom error answer
+    this.app.messages.NO_INTENT_FOUND= "Ich weiß leider nicht was ich mit deiner Anfrage machen soll, tut mir leid";
+
   }
 
   initializeApp() {
@@ -37,6 +40,7 @@ class AlexaApp {
         var session = req.getSession();
         res.shouldEndSession(false);
         res.say('Willkommen bei Alexinator, dem Spiel das deine Gedanken lesen kann');
+        session.set('status','launch');
         winston.log('info','... Sucessfully launched app');
     });
   }

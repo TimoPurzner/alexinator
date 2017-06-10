@@ -59,6 +59,7 @@ exports.sendAnswer = function(answer, session, signature, step) {
 
         case 'ich weiß es nicht':
         case 'ich weiß nicht':
+        case: 'weiß ich nicht'
           answerId = 2;
           break;
 
@@ -80,7 +81,6 @@ exports.sendAnswer = function(answer, session, signature, step) {
 
       request(url + 'answer?session=' + session + '&signature=' + signature + '&step=' + step + '&answer=' + answerId, function(error, response, body) {
         if (!error && response.statusCode === 200) {
-          winston.log('info', body+'\r\n');
           //TODO: check if question is null
           checkWin(JSON.parse(body), function(rs ,win){
             if(win){ // if akinator try to guess
@@ -95,7 +95,7 @@ exports.sendAnswer = function(answer, session, signature, step) {
                     if (!error && response.statusCode == 200) { // Rewquest success
                       var rsL = JSON.parse(body);
                       winston.log('info', 'GEWONNNNENN WUHUHUHUHHUH\r\n\r\n');
-                      winston.log('info', body + '\r\n\r\n');
+
                       resolve({
                         name: rsL.parameters.elements[0].element.name,
                         des:  rsL.parameters.elements[0].element.description,

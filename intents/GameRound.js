@@ -36,8 +36,18 @@ module.exports = class Intent {
     // check if there is an winning condition
     if(status=='win'){
       if(answer.toLowerCase()=='ja'){
+        var name = session.get('akinatorName');
         // TODO Send Akinator das es stimmt
         res.say("Wieder richtig gelegen Klasse");
+        // Add a card so the player cann see the person whitch alexa get
+        res.card({
+          type: "Standard",
+          title: "Alexinator",
+          text: "Ich habe die gedachte Person erraten " + name,
+          image: {
+            smallImageUrl: session.get("akinatorPicURL")
+          }
+        });
         session.set('status','finished');
         return res.send();
       }

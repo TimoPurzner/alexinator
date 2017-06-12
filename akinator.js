@@ -49,24 +49,40 @@ exports.sendAnswer = function(answer, session, signature, step) {
       var answerId;
       // Set the answerID
       switch (answer.toLowerCase()) {
+        case 'sicherlich':
+        case 'sicher':
+        case 'bestimmt':
+        case 'definitiv':
+        case 'ganz bestimmt':
         case 'ja':
           answerId = 0;
           break;
 
+        case 'definitiv nein':
+        case 'ganz sicher nicht':
+        case 'ganz bestimmt nicht':
+        case 'bestimmt nicht':
         case 'nein':
           answerId = 1;
           break;
 
+        case 'keinen Plan':
+        case 'kein Plan':
+        case 'keine Ahnung':
         case 'ich weiß es nicht':
         case 'ich weiß nicht':
         case 'weiß ich nicht':
           answerId = 2;
           break;
 
+        case 'ich glaube schon':
+        case 'ich denke schon':
         case 'wahrscheinlich':
           answerId = 3;
           break;
 
+        case 'ich denke nicht':
+        case 'ich glaube nicht':
         case 'wahrscheinlich nicht':
           answerId = 4;
           break;
@@ -99,7 +115,7 @@ exports.sendAnswer = function(answer, session, signature, step) {
                       resolve({
                         name: rsL.parameters.elements[0].element.name,
                         des:  rsL.parameters.elements[0].element.description,
-                        pic:  "https://photos.clarinea.fr/BL_5_de/600/partenaire/z/3056807__415558996.jpg",//rsL.parameters.elements[0].element.absolute_picture_path,
+                        pic:  null,//rsL.parameters.elements[0].element.absolute_picture_path,
                         question: rs.parameters.question, /* Fals Person nicht die richtige ist */
                         step: rs.parameters.step
                       });

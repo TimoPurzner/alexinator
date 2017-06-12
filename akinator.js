@@ -99,7 +99,7 @@ exports.sendAnswer = function(answer, session, signature, step) {
                       resolve({
                         name: rsL.parameters.elements[0].element.name,
                         des:  rsL.parameters.elements[0].element.description,
-                        pic:  "https://photos.clarinea.fr/BL_5_de/600/partenaire/z/3056807__415558996.jpg"//rsL.parameters.elements[0].element.absolute_picture_path,
+                        pic:  "https://photos.clarinea.fr/BL_5_de/600/partenaire/z/3056807__415558996.jpg",//rsL.parameters.elements[0].element.absolute_picture_path,
                         question: rs.parameters.question, /* Fals Person nicht die richtige ist */
                         step: rs.parameters.step
                       });

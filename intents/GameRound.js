@@ -18,6 +18,7 @@ module.exports = class Intent {
     this.utterances = ['{-|answer}'];
   }
   execute(req, res) {
+    var answers = "Antworte mit Ja, Nein, ich weiß nicht, wahrscheinlich oder wahrscheinlich nicht."
     var now = moment();
     var time = now.format('YYYY-MM-DD HH:mm:ss Z');
     winston.log('info', 'Intent: GameRound ['+time+']');
@@ -52,7 +53,7 @@ module.exports = class Intent {
         return res.send();
       }
       if(answer.toLowerCase()='nein'){
-        res.say("Dann muss ich wohl mehr Fragen stellen, "+ session.get(question)).reprompt("hilfe");
+        res.say("Dann muss ich wohl mehr Fragen stellen, "+ session.get(question)).reprompt(reprom);
         session.set('status','question');
         return res.send();
       }
@@ -62,7 +63,7 @@ module.exports = class Intent {
       function(rs){ // success
 
         if(rs.name){ // Akinator trys to guess
-          res.say("Denkst du an " + rs.name + " " + rs.des + "?").reprompt("hilfe");
+          res.say("Denkst du an " + rs.name + " " + rs.des + "?").reprompt("Ich habe gefragt ob du an" + rs.name +" denkst.");
           // Save so the user can tell if the Person is right or wrong
           session.set('akinatorName',rs.name);
           session.set('akinatorPicURL',rs.pic);
@@ -75,7 +76,7 @@ module.exports = class Intent {
           // Get new question
           question = rs.question;
           // Asking next question
-          res.say(question).reprompt("hilfe");
+          res.say(question).reprompt("Die Frage war " + question + answers);
           // set new question
           session.set('akinatorQuestion', rs.question);
           session.set('akinatorStep', rs.step);

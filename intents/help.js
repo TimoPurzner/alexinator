@@ -13,23 +13,23 @@ module.exports = class TestIntent {
   }
   execute(req, rsp) {
 
-    res.shouldEndSession(false);
+    rsp.shouldEndSession(false);
     //Get current question
     var session = req.getSession();
     var status = session.get('status');
 
     switch (status) {
       case 'launch':
-          rsp.say("Du hast noch kein Spiel angefangen, wenn du ein Spiel beginnen möchtest sag einfach starte eine Spiel").reprompt("Hilfe");
+          rsp.say("Du hast noch kein Spiel angefangen, wenn du ein Spiel beginnen möchtest sag einfach starte eine Spiel").reprompt();
         break;
       case 'question':
-          rsp.say("Die Aktuelle Frage ist:" + session.get("akinatorQuestion") + "Antworte mit Ja, Nein ,ich weiß nicht, wahrscheinlich oder wahrscheinlich nicht").reprompt("Hilfe");
+          rsp.say("Die Aktuelle Frage ist:" + session.get("akinatorQuestion") + "Antworte mit Ja, Nein ,ich weiß nicht, wahrscheinlich oder wahrscheinlich nicht").reprompt();
       break;
       case 'finished':
-          rsp.say("Ich habe die Letze Person erraten an die du gedacht hast. Sage Starte eine Runde um ein neues Spiel zu begeinnen").reprompt("Hilfe");
+          rsp.say("Ich habe die Letze Person erraten an die du gedacht hast. Sage Starte eine Runde um ein neues Spiel zu begeinnen").reprompt();
       break;
       case 'win':
-        resp.say("Ich wollte wissen ob du an " + session.get("akinatorName") + " gedacht hast").reprompt("Hilfe");
+        resp.say("Ich wollte wissen ob du an " + session.get("akinatorName") + " gedacht hast").reprompt();
         break;
       default:
         rsp.say("Alexinator ist ein Spiel das versucht eine Person zu erraten, an die du denkst! Dazu stelle ich dir "+

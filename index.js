@@ -39,7 +39,7 @@ class AlexaApp {
         winston.log('info','Launching app ('+ pjson.version +') instance ...');
         var session = req.getSession();
         res.shouldEndSession(false);
-        res.say('Willkommen bei Alexinator, dem Spiel das deine Gedanken lesen kann');
+        res.say('Willkommen bei Alexinator, dem Spiel das deine Gedanken lesen kann. Sage Starte ein Spiel um eine Runde zu beginnen.');
         session.set('status','launch');
         winston.log('info','... Sucessfully launched app');
     });

@@ -115,7 +115,7 @@ exports.sendAnswer = function(answer, session, signature, step) {
                       resolve({
                         name: rsL.parameters.elements[0].element.name,
                         des:  rsL.parameters.elements[0].element.description,
-                        pic:  null,//rsL.parameters.elements[0].element.absolute_picture_path,
+                        pic:  rsL.parameters.elements[0].element.absolute_picture_path.replace('http','https'),
                         question: rs.parameters.question, /* Fals Person nicht die richtige ist */
                         step: rs.parameters.step
                       });

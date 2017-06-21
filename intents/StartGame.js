@@ -32,6 +32,7 @@ module.exports = class Intent {
     var time = now.format('YYYY-MM-DD HH:mm:ss Z');
     winston.log('info','Intent: StartGame ['+time+']');
     res.shouldEndSession(false);
+    res.say("Dann fangen wir mal beantworte einfach meine Fragen");
     //Get current question
     var session = req.getSession();
     var question = session.get('akinatorQuestion');

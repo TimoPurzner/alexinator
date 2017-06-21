@@ -14,6 +14,6 @@ module.exports = class TestIntent {
     //Get current question
     var session = req.getSession();
     session.set("stats", "finished")
-    rsp.say("Tschüß, hoffentlich spielen wird bald wieder.");
+    rsp.say("Tschüß, hoffentlich spielen wir bald wieder.");
   }
 }

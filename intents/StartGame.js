@@ -32,7 +32,7 @@ module.exports = class Intent {
     var time = now.format('YYYY-MM-DD HH:mm:ss Z');
     winston.log('info','Intent: StartGame ['+time+']');
     res.shouldEndSession(false);
-    res.say("Dann fangen wir mal beantworte einfach meine Fragen");
+    res.say("Dann fangen wir mal an beantworte einfach meine Fragen");
     //Get current question
     var session = req.getSession();
     var question = session.get('akinatorQuestion');
@@ -48,7 +48,7 @@ module.exports = class Intent {
           session.set('akinatorQuestion', rs.question);
           session.set('status','question');
           winston.log('info','Create session success set session done');
-          res.say(rs.question).reprompt();
+          res.say(rs.question).reprompt("Wenn du nicht weiter weißt frag nach hilfe!");
           return res.send();
       },
       function(error){

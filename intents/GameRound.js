@@ -18,7 +18,6 @@ module.exports = class Intent {
     this.utterances = ['{-|answer}'];
   }
   execute(req, res) {
-    var answers = "Antworte mit Ja, Nein, ich weiß nicht, wahrscheinlich oder wahrscheinlich nicht."
     var now = moment();
     var time = now.format('YYYY-MM-DD HH:mm:ss Z');
     winston.log('info', 'Intent: GameRound ['+time+']');
@@ -53,7 +52,7 @@ module.exports = class Intent {
         return res.send();
       }
       if(answer.toLowerCase()='nein'){
-        res.say("Dann muss ich wohl mehr Fragen stellen, "+ session.get(question)).reprompt(reprom);
+        res.say("Dann muss ich wohl mehr Fragen stellen, "+ session.get(question)).reprompt("Wenn du nicht weiter weißt frag nach hilfe!");
         session.set('status','question');
         return res.send();
       }
@@ -76,7 +75,7 @@ module.exports = class Intent {
           // Get new question
           question = rs.question;
           // Asking next question
-          res.say(question).reprompt("Die Frage war " + question + answers);
+          res.say(question).reprompt("Wenn du nicht weiter weißt frag nach hilfe!");
           // set new question
           session.set('akinatorQuestion', rs.question);
           session.set('akinatorStep', rs.step);

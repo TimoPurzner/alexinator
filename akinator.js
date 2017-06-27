@@ -5,8 +5,7 @@ var url = 'http://api-de1.akinator.com/ws/';
 
 /*
   createSession
-  Öffnet eine neue Session zur Akinator API und liefert die SessionID zurück
-
+  Öffnet eine neue Session zur Akinator API und liefert die SessionID und die erste Frage zurück
 */
 exports.createSession = function(){
   return new Promise(
@@ -35,11 +34,10 @@ sends the players answer to the akinator server
 Returns a new question from the akinator API.
 
 Parameter:
-  answerId:   the Players answer
-  session:    the Akinator SessionID of the player
-  signature:  the Akinator signature
-  step:       the Step number
-  cb:         the callback function
+  answerId:   Players answer
+  session:    Akinator SessionID of the player
+  signature:  Akinator signature
+  step:       Step number
 
 */
 exports.sendAnswer = function(answer, session, signature, step) {
@@ -49,6 +47,7 @@ exports.sendAnswer = function(answer, session, signature, step) {
       var answerId;
       // Set the answerID
       switch (answer.toLowerCase()) {
+        case 'jaja':
         case 'sicherlich':
         case 'sicher':
         case 'bestimmt':
@@ -66,15 +65,18 @@ exports.sendAnswer = function(answer, session, signature, step) {
           answerId = 1;
           break;
 
+        case 'woher soll ich das wissen':
         case 'keinen Plan':
         case 'kein Plan':
-        case 'keine Ahnung':
+        case 'keine ahnung':
         case 'ich weiß es nicht':
         case 'ich weiß nicht':
         case 'weiß ich nicht':
           answerId = 2;
           break;
 
+        case 'sehr wahrscheinlich':
+        case 'sehr wahrscheinlich':
         case 'ich glaube schon':
         case 'ich denke schon':
         case 'wahrscheinlich':
@@ -97,7 +99,6 @@ exports.sendAnswer = function(answer, session, signature, step) {
 
       request(url + 'answer?session=' + session + '&signature=' + signature + '&step=' + step + '&answer=' + answerId, function(error, response, body) {
         if (!error && response.statusCode === 200) {
-          //TODO: check if question is null
           checkWin(JSON.parse(body), function(rs ,win){
             if(win){ // if akinator try to guess
               // Get the person akinator trys to guess
@@ -111,8 +112,8 @@ exports.sendAnswer = function(answer, session, signature, step) {
                     if (!error && response.statusCode == 200) { // Rewquest success
                       var rsL = JSON.parse(body);
                       winston.log('info', 'GEWONNNNENN WUHUHUHUHHUH\r\n\r\n');
-
                       resolve({
+                        id:   rsL.parameters.elements[0].element.id,
                         name: rsL.parameters.elements[0].element.name,
                         des:  rsL.parameters.elements[0].element.description,
                         pic:  rsL.parameters.elements[0].element.absolute_picture_path.replace('http','https'),
@@ -142,6 +143,20 @@ exports.sendAnswer = function(answer, session, signature, step) {
         }
       });
     });// Promise
+};
+
+/**
+sendWin
+Tells akinator API the guessed Person is right!
+Parameter:
+  id:   id of the list item
+  text: description of the person
+*/
+exports.sendWin = function(id, text) {
+
+  request("http://de.akinator.com/personnages/valide/list/"+id+"/"+text+"/1", function(error, response, body) {
+
+  });
 };
 
 checkWin = function(rs, cb){

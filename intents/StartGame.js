@@ -41,7 +41,7 @@ module.exports = class Intent {
     // Get an Session from akinator and save it
     return akinator.createSession().then(
       function(rs){ // sucess
-              winston.log('info','Create session success');
+          winston.log('info','Create session success');
           session.set('akinatorSession', rs.session);
           session.set('akinatorSignature', rs.signature);
           session.set('akinatorStep', rs.step);

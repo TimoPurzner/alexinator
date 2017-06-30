@@ -161,7 +161,7 @@ exports.sendWin = function(id, text) {
 
 checkWin = function(rs, cb){
   // if elements is given akinator trys to guess the person
-  if(rs.parameters.progression >=99.5){
+  if(rs.parameters.progression >=99){
     cb(rs, true);
   }
   else{

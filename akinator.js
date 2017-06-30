@@ -47,6 +47,9 @@ exports.sendAnswer = function(answer, session, signature, step) {
       var answerId;
       // Set the answerID
       switch (answer.toLowerCase()) {
+        case 'jaa':
+        case 'jo':
+        case 'freilich':
         case 'jaja':
         case 'sicherlich':
         case 'sicher':

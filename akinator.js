@@ -117,8 +117,8 @@ exports.sendAnswer = function(answer, session, signature, step) {
                       winston.log('info', 'GEWONNNNENN WUHUHUHUHHUH\r\n\r\n');
                       resolve({
                         id:   rsL.parameters.elements[0].element.id,
-                        name: rsL.parameters.elements[0].element.name,
-                        des:  rsL.parameters.elements[0].element.description,
+                        name: rsL.parameters.elements[0].element.name.replace('"',''),
+                        des:  rsL.parameters.elements[0].element.description.replace('"',''),
                         pic:  rsL.parameters.elements[0].element.absolute_picture_path.replace('http','https'),
                         question: rs.parameters.question, /* Fals Person nicht die richtige ist */
                         step: rs.parameters.step

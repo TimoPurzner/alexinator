@@ -43,9 +43,9 @@ module.exports = class Intent {
           type: "Standard",
           title: "Alexinator",
           text: "Ich habe die gedachte Person erraten " + session.get('akinatorName'),
-          image: {
+          /*image: {
             smallImageUrl: session.get("akinatorPicURL")
-          }
+          }*/
         });
         session.set('status','finished');
         return res.send();

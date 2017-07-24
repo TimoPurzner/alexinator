@@ -42,7 +42,7 @@ module.exports = class Intent {
         res.card({
           type: "Standard",
           title: "Alexinator",
-          text: "Ich habe die gedachte Person erraten " + session.get('akinatorName'),
+          text: "Ich habe die gedachte Person erraten " + session.get('akinatorName')
           /*image: {
             smallImageUrl: session.get("akinatorPicURL")
           }*/
@@ -79,8 +79,6 @@ module.exports = class Intent {
           session.set('status','question');
           return res.send();
         }
-
-
       },
       function(error){ // error
         res.say(error.error_text + ". Für Hilfe frag nach Hilfe, dann versuche ich dir zu helfen");

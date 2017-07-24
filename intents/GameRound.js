@@ -42,7 +42,7 @@ module.exports = class Intent {
         res.card({
           type: "Standard",
           title: "Alexinator",
-          text: "Ich habe die gedachte Person erraten " + session.get('akinatorName')
+          content: "Ich habe die gedachte Person erraten " + session.get('akinatorName')
           /*image: {
             smallImageUrl: session.get("akinatorPicURL")
           }*/

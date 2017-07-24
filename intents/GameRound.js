@@ -39,11 +39,11 @@ module.exports = class Intent {
         akinator.sendWin(session.get('akinatorId'), "undefined");//session.get('akinatorDes'));
         res.say("Wieder richtig gelegen Klasse");
         // Add a card so the player cann see the person whitch alexa get
-        /* res.card({
+        res.card({
           type: "Standard",
           title: "Alexinator",
           content: "Ich habe die gedachte Person erraten " + session.get('akinatorName')
-        }); */
+        });
         session.set('status','finished');
         return res.send();
       }

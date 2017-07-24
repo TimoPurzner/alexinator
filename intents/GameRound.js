@@ -34,7 +34,7 @@ module.exports = class Intent {
     winston.log('info', 'Status: ' + status);
     // ########### Person guess ################
     if(status=='win'){
-      if(answer.toLowerCase()=='ja'){
+      if(answer.toLowerCase().includes("ja")){
         // Send Akinator that the answer is correct
         akinator.sendWin(session.get('akinatorId'), "undefined");//session.get('akinatorDes'));
         res.say("Wieder richtig gelegen Klasse");
